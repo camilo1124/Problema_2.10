@@ -1,0 +1,30 @@
+Modelo de la taqueria
+
+Numero de mesas en el restaurante:	6
+
+Tiempo medio entre llegadas(min):	0.167
+
+Costo de una orden:			200
+
+Precio de una orden:			400
+
+Salario de un mesero por hora:	3000
+
+____________________________________
+
+Tamaño del grupo:		1	2	3
+Probabilidad:			0.400	0.300	0.300
+__________________________________
+
+____________________________________
+
+Ordenes/persona:		0	1	2
+Probabilidad:			0.200	0.650	0.150
+__________________________________
+
+____________________________________
+
+Tiempo(min/orden)		10	15	20
+Probabilidad:			0.100	0.400	0.300
+__________________________________
+
