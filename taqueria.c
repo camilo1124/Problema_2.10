@@ -104,11 +104,12 @@ int main(){
 	for (int i = 1;i <= 3; i++)fprintf(outfile,"\t%.3f",prob_tiempo_comida[i]);
 	fprintf(outfile, "\n__________________________________\n\n");
 
+
 	init_simlib();
 
 	/* numero de atributos por registro */
 
-	maxatr = 5;
+	maxatr = 6;
 
 	clientes_totales = 0;
 	esperantes_totales = 0;
@@ -116,26 +117,26 @@ int main(){
 
 	/* Programar la primera llegada */
 
-	tiempo = sim_time + expon(media_llegadas,STREAM_INTERARRIVAL);
+	tiempo = (sim_time + expon(media_llegadas,STREAM_INTERARRIVAL))*100;
 	event_schedule(tiempo,EVENTO_LLEGADA);
 	sampst(tiempo,SAMPST_TIEMPO_ENTRELLEGADA);
 	
 	/* Programar la cerrada de la taquieria */
 	
-	event_schedule(turno_en_horas * 60, EVENTO_CERRAR_RESTATURANTE);
+	event_schedule((float)(turno_en_horas * 60), EVENTO_CERRAR_RESTATURANTE);
 	
 	while (list_size[LIST_EVENT] != 0){
 
+		printf("sim_time: %.3f\n",sim_time);
+
 		/* Determinar el siguiente evento */
-
 		timing();
-
 		switch (next_event_type){
 			case EVENTO_LLEGADA:
 				llegada();
 				break;
 			case EVENTO_SALIDA:
-				salida(transfer[3]);
+				salida((int)transfer[3]);
 				break;
 			case EVENTO_CERRAR_RESTATURANTE:
 				event_cancel(EVENTO_LLEGADA);
@@ -143,8 +144,12 @@ int main(){
 		}
 	}
 
+	reporte();
+
 	fclose(infile);
 	fclose(outfile);
+
+	return 0;
 
 	
 
@@ -156,7 +161,7 @@ void llegada(){
         float tiempo_total = 0;
 
 	/* Programar la siguiente llegada */
-	tiempo = sim_time + expon(media_llegadas,STREAM_INTERARRIVAL);
+	tiempo = sim_time + (expon(media_llegadas,STREAM_INTERARRIVAL)*100);
 	event_schedule(tiempo,EVENTO_LLEGADA);
 	sampst(tiempo,SAMPST_TIEMPO_ENTRELLEGADA);
 
@@ -183,9 +188,6 @@ void llegada(){
 		if (list_size[mesa] == 0){
 
 			/* Hacer la mesa ocupada */
-			transfer[3] = mesa;
-			transfer[4] = tam_grupo_entrante;
-			list_file(FIRST, mesa);
 			sampst(0.0,SAMPST_TIEMPO_ESPERA);
 
 			for (int persona = 1; persona <= tam_grupo_entrante; persona++){
@@ -195,7 +197,11 @@ void llegada(){
 			for (int num_orden = 1; num_orden <= ordenes_totales; num_orden++){
 				tiempo_total += tiempo_comida[random_integer(F_prob_tiempo_comida,STREAM_COMIDA)];
 			}
+			list_file(FIRST, mesa);
+			transfer[4] = tam_grupo_entrante;
+			transfer[3] = mesa;
 			event_schedule(sim_time + tiempo_total,EVENTO_SALIDA);	
+
 			sampst(tiempo_total,SAMPST_TIEMPO_COMIDA);
 			return;
 		}
@@ -211,20 +217,20 @@ void llegada(){
 	/*Se hace uso de "2 colas" pero solo es una, sin embargo el comportamiento
 	 * de un restaurante en la vida real, exige este tipo de programación */
 
-	list_file(LAST, (num_mesas + tipo_cola));		/* Una cola dependiendo el tipo de grupo */
-	list_file(LAST, (num_mesas + 3));			/* Una cola para todos sirve para las estadisticas */
+	list_file(FIRST, (num_mesas + tipo_cola));		/* Una cola dependiendo el tipo de grupo */
+	list_file(FIRST, (num_mesas + 3));			/* Una cola para todos sirve para las estadisticas */
 
 	/* Evaluar la cantidad de grupos en cola */
 
 	if (max_clientes_cola < list_size[num_mesas + 3]){
-		max_clientes_cola = list_size[num_mesas + 3]
+		max_clientes_cola = list_size[num_mesas + 3];
 	}
 	
 }
 
 void salida(int mesa){
 
-	clientes_totales += transfer[4];			/* Info sobre los numero de clientes atendidos */
+	clientes_totales += (int)transfer[4];			/* Info sobre los numero de clientes atendidos */
 	sampst(transfer[4],SAMPST_TAMANO_GRUPO);		/* Info para el promedio de grupos */
 
 	int ordenes_totales = 0,tipo_cola,tam_grupo_entrante;
@@ -248,8 +254,7 @@ void salida(int mesa){
 
 		list_remove(FIRST, num_mesas + tipo_cola);
 		sampst(sim_time - transfer[1], SAMPST_TIEMPO_ESPERA);
-		transfer[3] = mesa;
-		tam_grupo_entrante = transfer[4];
+		tam_grupo_entrante = (int)transfer[4];
 		for (int persona = 1; persona <= tam_grupo_entrante; persona++){
 			ordenes_totales += random_integer(F_prob_ordenes_pers,STREAM_ORDENES);
 			ordenes_totales_turno += ordenes_totales;
@@ -258,6 +263,7 @@ void salida(int mesa){
 			tiempo_total += tiempo_comida[random_integer(F_prob_tiempo_comida,STREAM_COMIDA)];
 			sampst(tiempo_total, SAMPST_TIEMPO_COMIDA);
 		}
+		transfer[3] = mesa;
 		event_schedule(sim_time + tiempo_total,EVENTO_SALIDA);	
 
 	}
@@ -270,7 +276,7 @@ void reporte(){
 	/* Utilidad añadiendo el costo de los salarios de los 2 meseros */
 	int utilidad_total = utilidad_precio_costo - (salario_hora * turno_en_horas); 
 	/* Probabilidad de no encontrar mesa disponible */
-	float probabilidad_no_mesa = float(clientes_totales)/float(esperantes_totales);
+	float probabilidad_no_mesa = (float)esperantes_totales/(float)clientes_totales;
 
 	fprintf(outfile,"______________________________________________________\n");
 	fprintf(outfile," \nResultados\n\n");
@@ -292,10 +298,10 @@ void reporte(){
 	fprintf(outfile,"Las variables estan acompañados con el numero  sampst correspondiente en la tabla\n");
 	fprintf(outfile,"En la tabla prestar atención a los averages que significa promedio\n");
 	fprintf(outfile,"\nMedidas de desempeño para esta seccion\n\n");
-	fprinf(outfile,"1.Tiempo promedio de espera en cola.\n\n");
-	fprinf(outfile,"2.Tiempo promedio de comida por grupo.\n\n");
-	fprinf(outfile,"3.Tamaño de grupo promedio.\n\n");
-	fprinf(outfile,"4.Tiempo entre llegadas promedio.\n\n");
+	fprintf(outfile,"1.Tiempo promedio de espera en cola.\n\n");
+	fprintf(outfile,"2.Tiempo promedio de comida por grupo.\n\n");
+	fprintf(outfile,"3.Tamaño de grupo promedio.\n\n");
+	fprintf(outfile,"4.Tiempo entre llegadas promedio.\n\n");
 	out_sampst(outfile, SAMPST_TIEMPO_ESPERA,SAMPST_TIEMPO_ENTRELLEGADA); 
 	
 }

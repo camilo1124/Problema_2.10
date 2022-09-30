@@ -2,11 +2,17 @@ Modelo de la taqueria
 
 Numero de mesas en el restaurante:	6
 
+Numero de mesas para dos:		4
+
+Numero de mesas para cuatro:		2
+
 Tiempo medio entre llegadas(min):	0.167
 
 Costo de una orden:			200
 
 Precio de una orden:			400
+
+Turno en horas:			12
 
 Salario de un mesero por hora:	3000
 
@@ -24,7 +30,69 @@ __________________________________
 
 ____________________________________
 
-Tiempo(min/orden)		10	15	20
+Tiempo(min/orden)		10.000000	15.000000	20.000000
 Probabilidad:			0.100	0.400	0.300
 __________________________________
+
+______________________________________________________
+ 
+Resultados
+
+______________________________________________________
+
+Utilidades
+
+ Cantidad de ordenes pedidas durante un turno: 236 
+
+ Utilidad precio/costo en un turno: 47200 
+
+ Utilidad total en un turno (teniendo en cuenta salarios de 2 meseros): 11200 
+
+______________________________________________________
+
+Probabilidad de NO encontrar mesa disponible
+
+Clientes totales atendidos: 76
+
+Clientes que espareron en cola: 15
+
+Probabilidad de no encontrar mesa: 5.067
+
+______________________________________________________
+
+Numero de clientes(grupos) maximo en cola : 3
+
+_______________________________________________________________________
+
+
+
+A continuación se hará uso de la función out_sampst
+Las variables estan acompañados con el numero  sampst correspondiente en la tabla
+En la tabla prestar atención a los averages que significa promedio
+
+Medidas de desempeño para esta seccion
+
+1.Tiempo promedio de espera en cola.
+
+2.Tiempo promedio de comida por grupo.
+
+3.Tamaño de grupo promedio.
+
+4.Tiempo entre llegadas promedio.
+
+
+ sampst                         Number
+variable                          of
+ number       Average           values          Maximum          Minimum
+________________________________________________________________________
+
+    1         8.38725          42.0000          195.145          0.00000 
+
+    2         58.0769          65.0000          135.000          15.0000 
+
+    3         1.80952          42.0000          3.00000          1.00000 
+
+    4         329.967          43.0000          720.683          15.2489 
+________________________________________________________________________
+
 
