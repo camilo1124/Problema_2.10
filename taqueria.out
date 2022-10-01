@@ -1,5 +1,9 @@
 Modelo de la taqueria
 
+Grupo 08 
+
+ Problema 2.10 - La taqueria de paco 
+
 Numero de mesas en el restaurante:	6
 
 Numero de mesas para dos:		4
@@ -16,31 +20,31 @@ Turno en horas:			12
 
 Salario de un mesero por hora:	3000
 
-____________________________________
+_______________________________________________________________________________________
 
 Tamaño del grupo:		1	2	3
 Probabilidad:			0.400	0.300	0.300
-__________________________________
+_____________________________________________________________________________________
 
-____________________________________
+_______________________________________________________________________________________
 
 Ordenes/persona:		0	1	2
 Probabilidad:			0.200	0.650	0.150
-__________________________________
+_____________________________________________________________________________________
 
-____________________________________
+_______________________________________________________________________________________
 
 Tiempo(min/orden)		10.000000	15.000000	20.000000
 Probabilidad:			0.100	0.400	0.300
-__________________________________
+_____________________________________________________________________________________
 
-______________________________________________________
+__________________________________________________________________________________________
  
-Resultados
+Resultados / los insisos se muestran al principio de cada medida
 
-______________________________________________________
+__________________________________________________________________________________________
 
-Utilidades
+ a . Utilidades
 
  Cantidad de ordenes pedidas durante un turno: 236 
 
@@ -48,21 +52,21 @@ Utilidades
 
  Utilidad total en un turno (teniendo en cuenta salarios de 2 meseros): 11200 
 
-______________________________________________________
+__________________________________________________________________________________________
 
-Probabilidad de NO encontrar mesa disponible
+ b . Probabilidad de NO encontrar mesa disponible
 
 Clientes totales atendidos: 76
 
 Clientes que espareron en cola: 15
 
-Probabilidad de no encontrar mesa: 5.067
+Probabilidad de no encontrar mesa: 0.197
 
-______________________________________________________
+__________________________________________________________________________________________
 
-Numero de clientes(grupos) maximo en cola : 3
+ c . Numero de clientes(en grupos) maximo en cola: 3
 
-_______________________________________________________________________
+________________________________________________________________________________________
 
 
 
@@ -72,13 +76,13 @@ En la tabla prestar atención a los averages que significa promedio
 
 Medidas de desempeño para esta seccion
 
-1.Tiempo promedio de espera en cola.
+ 1 (d) .Tiempo promedio de espera en cola.(min)
 
-2.Tiempo promedio de comida por grupo.
+ 2 (e) . Tiempo promedio de comida por grupo.(min)
 
-3.Tamaño de grupo promedio.
+ 3 (f) .Tamaño de grupo promedio (personas) .
 
-4.Tiempo entre llegadas promedio.
+ 4 (g) .Tiempo entre llegadas promedio (min).
 
 
  sampst                         Number

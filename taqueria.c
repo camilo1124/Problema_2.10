@@ -77,6 +77,8 @@ int main(){
 	/* Encabezado del reporte */
 
 	fprintf(outfile, "Modelo de la taqueria\n\n");
+	fprintf(outfile, "Grupo 08 \n\n");
+	fprintf(outfile, " Problema 2.10 - La taqueria de paco \n\n");
 	fprintf(outfile, "Numero de mesas en el restaurante:\t%d\n\n", num_mesas);
 	fprintf(outfile, "Numero de mesas para dos:\t\t%d\n\n",mesas_dos);
 	fprintf(outfile, "Numero de mesas para cuatro:\t\t%d\n\n",mesas_cuatro);
@@ -85,24 +87,24 @@ int main(){
 	fprintf(outfile, "Precio de una orden:\t\t\t%d\n\n",precio_orden);
 	fprintf(outfile, "Turno en horas:\t\t\t%d\n\n",turno_en_horas);
 	fprintf(outfile, "Salario de un mesero por hora:\t%d\n\n",salario_hora);
-	fprintf(outfile, "____________________________________\n\n");
+	fprintf(outfile, "_______________________________________________________________________________________\n\n");
 	fprintf(outfile, "Tamaño del grupo:\t");
 	for (int i = 1;i <= 3; i++)fprintf(outfile,"\t%d",tam_grupo[i]);
 	fprintf(outfile, "\nProbabilidad:\t\t");
 	for (int i = 1;i <= 3; i++)fprintf(outfile,"\t%.3f",prob_tam_grupo[i]); 
-	fprintf(outfile, "\n__________________________________\n\n");
-	fprintf(outfile, "____________________________________\n\n");
+	fprintf(outfile, "\n_____________________________________________________________________________________\n\n");
+	fprintf(outfile, "_______________________________________________________________________________________\n\n");
 	fprintf(outfile, "Ordenes/persona:\t");
 	for (int i = 1;i <= 3; i++)fprintf(outfile,"\t%d",ordenes_pers[i]);
 	fprintf(outfile, "\nProbabilidad:\t\t");
 	for (int i = 1;i <= 3; i++)fprintf(outfile,"\t%.3f",prob_ordenes_pers[i]); 
-	fprintf(outfile, "\n__________________________________\n\n");
-	fprintf(outfile, "____________________________________\n\n");
+	fprintf(outfile, "\n_____________________________________________________________________________________\n\n");
+	fprintf(outfile, "_______________________________________________________________________________________\n\n");
 	fprintf(outfile, "Tiempo(min/orden)\t");
 	for (int i = 1;i <= 3; i++)fprintf(outfile,"\t%f",tiempo_comida[i]);
 	fprintf(outfile, "\nProbabilidad:\t\t");
 	for (int i = 1;i <= 3; i++)fprintf(outfile,"\t%.3f",prob_tiempo_comida[i]);
-	fprintf(outfile, "\n__________________________________\n\n");
+	fprintf(outfile, "\n_____________________________________________________________________________________\n\n");
 
 
 	init_simlib();
@@ -126,8 +128,6 @@ int main(){
 	event_schedule((float)(turno_en_horas * 60), EVENTO_CERRAR_RESTATURANTE);
 	
 	while (list_size[LIST_EVENT] != 0){
-
-		printf("sim_time: %.3f\n",sim_time);
 
 		/* Determinar el siguiente evento */
 		timing();
@@ -161,7 +161,11 @@ void llegada(){
         float tiempo_total = 0;
 
 	/* Programar la siguiente llegada */
-	tiempo = sim_time + (expon(media_llegadas,STREAM_INTERARRIVAL)*100);
+	/* Multiplicar por cien hace que la simulación tenga sentido, talvez porque 
+	 * todo se maneja en minutos*/
+	/*Es una exponencial con 1/6 como se puede ver en el planteamiento del punto */
+        /* Siendo la ecuación planteada (1/6 * e)^(-t/6) */	
+	tiempo = sim_time + (expon(media_llegadas,STREAM_INTERARRIVAL)*100);	
 	event_schedule(tiempo,EVENTO_LLEGADA);
 	sampst(tiempo,SAMPST_TIEMPO_ENTRELLEGADA);
 
@@ -278,30 +282,30 @@ void reporte(){
 	/* Probabilidad de no encontrar mesa disponible */
 	float probabilidad_no_mesa = (float)esperantes_totales/(float)clientes_totales;
 
-	fprintf(outfile,"______________________________________________________\n");
-	fprintf(outfile," \nResultados\n\n");
-	fprintf(outfile,"______________________________________________________\n");
-	fprintf(outfile, "\nUtilidades\n\n");
+	fprintf(outfile,"__________________________________________________________________________________________\n");
+	fprintf(outfile," \nResultados / los insisos se muestran al principio de cada medida\n\n");
+	fprintf(outfile,"__________________________________________________________________________________________\n");
+	fprintf(outfile, "\n a . Utilidades\n\n");
 	fprintf(outfile, " Cantidad de ordenes pedidas durante un turno: %d \n\n", ordenes_totales_turno);
 	fprintf(outfile, " Utilidad precio/costo en un turno: %d \n\n", utilidad_precio_costo);
 	fprintf(outfile, " Utilidad total en un turno (teniendo en cuenta salarios de 2 meseros): %d \n\n",
 			utilidad_total);
-	fprintf(outfile,"______________________________________________________\n");
-	fprintf(outfile, "\nProbabilidad de NO encontrar mesa disponible\n\n");
+	fprintf(outfile,"__________________________________________________________________________________________\n");
+	fprintf(outfile, "\n b . Probabilidad de NO encontrar mesa disponible\n\n");
 	fprintf(outfile, "Clientes totales atendidos: %d\n\n", clientes_totales);
 	fprintf(outfile, "Clientes que espareron en cola: %d\n\n", esperantes_totales);
 	fprintf(outfile, "Probabilidad de no encontrar mesa: %.3f\n\n", probabilidad_no_mesa);
-	fprintf(outfile,"______________________________________________________\n");
-	fprintf(outfile, "\nNumero de clientes(grupos) maximo en cola : %d\n\n",max_clientes_cola);
-	fprintf(outfile,"_______________________________________________________________________\n\n");
+	fprintf(outfile,"__________________________________________________________________________________________\n");
+	fprintf(outfile, "\n c . Numero de clientes(en grupos) maximo en cola: %d\n\n",max_clientes_cola);
+	fprintf(outfile,"________________________________________________________________________________________\n\n");
 	fprintf(outfile,"\n\nA continuación se hará uso de la función out_sampst\n");
 	fprintf(outfile,"Las variables estan acompañados con el numero  sampst correspondiente en la tabla\n");
 	fprintf(outfile,"En la tabla prestar atención a los averages que significa promedio\n");
 	fprintf(outfile,"\nMedidas de desempeño para esta seccion\n\n");
-	fprintf(outfile,"1.Tiempo promedio de espera en cola.\n\n");
-	fprintf(outfile,"2.Tiempo promedio de comida por grupo.\n\n");
-	fprintf(outfile,"3.Tamaño de grupo promedio.\n\n");
-	fprintf(outfile,"4.Tiempo entre llegadas promedio.\n\n");
+	fprintf(outfile," 1 (d) .Tiempo promedio de espera en cola.(min)\n\n");
+	fprintf(outfile," 2 (e) . Tiempo promedio de comida por grupo.(min)\n\n");
+	fprintf(outfile," 3 (f) .Tamaño de grupo promedio (personas) .\n\n");
+	fprintf(outfile," 4 (g) .Tiempo entre llegadas promedio (min).\n\n");
 	out_sampst(outfile, SAMPST_TIEMPO_ESPERA,SAMPST_TIEMPO_ENTRELLEGADA); 
 	
 }
